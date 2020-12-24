@@ -43,6 +43,7 @@ import { User } from './users/entities/user.entity'
       entities: [User],
     }),
     GraphQLModule.forRoot({
+      playground: true,
       autoSchemaFile: true,
     }),
     UsersModule,
