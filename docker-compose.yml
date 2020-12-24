@@ -1,0 +1,19 @@
+version: '3'
+services:
+  db:
+    image: mysql:5
+    container_name: samplemarket-mysql
+    restart: always
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    command: # 명령어 실행
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      TZ: Asia/Seoul
