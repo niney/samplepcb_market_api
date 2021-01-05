@@ -1,7 +1,9 @@
 import { InternalServerErrorException } from '@nestjs/common'
 import { Field, InputType, ObjectType } from '@nestjs/graphql'
+import { IsEmail } from 'class-validator'
 import {
   BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
   getManager,
@@ -30,6 +32,7 @@ export class User {
   @Column({
     name: 'mb_email',
   })
+  @IsEmail()
   email: string
 
   @Field(() => String)
@@ -83,17 +86,31 @@ export class User {
   opendAt: Date
 
   @BeforeInsert()
+  @BeforeUpdate()
   async hashPassword(): Promise<void> {
     if (this.password) {
       try {
         const password = await getManager().query(
-          `SELECT password(${this.password}) as pass`,
+          `SELECT password('${this.password}') as pass`,
         )
 
         this.password = password[0].pass
       } catch {
         throw new InternalServerErrorException()
       }
+    }
+  }
+
+  async checkPassword(loginPassword: string): Promise<boolean> {
+    try {
+      const result = await getManager().query(
+        `SELECT password('${loginPassword}') as pass`,
+      )
+      const password = result[0].pass
+
+      return this.password === password
+    } catch {
+      throw new InternalServerErrorException()
     }
   }
 }
