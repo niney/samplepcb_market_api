@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as moment from 'moment'
+import { JwtService } from 'src/jwt/jwt.service'
 import { Repository } from 'typeorm'
 import {
   CreateAccountInput,
@@ -14,6 +15,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly users: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
   getAll(): Promise<User[]> {
@@ -82,9 +84,11 @@ export class UsersService {
         }
       }
 
+      const token = this.jwtService.sign(user.id)
+
       return {
         ok: true,
-        token: 'test token',
+        token,
       }
     } catch {
       return {

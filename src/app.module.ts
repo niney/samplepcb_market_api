@@ -7,7 +7,8 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { UsersModule } from './users/users.module'
 import { User } from './users/entities/user.entity'
-import { CommonModule } from './common/common.module';
+import { CommonModule } from './common/common.module'
+import { JwtModule } from './jwt/jwt.module'
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CommonModule } from './common/common.module';
         DB_USERNAME: Joi.string(),
         DB_PASSWORD: Joi.string(),
         DB_DATABASE: Joi.string(),
+        SECRET_KEY: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({
@@ -45,6 +47,9 @@ import { CommonModule } from './common/common.module';
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
+    }),
+    JwtModule.forRoot({
+      secretKey: process.env.SECRET_KEY,
     }),
     UsersModule,
     CommonModule,
