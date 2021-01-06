@@ -1,5 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { AuthUser } from 'src/auth/auth-user.decorator'
+import { Roles } from 'src/auth/roles.decorator'
 import {
   CreateAccountInput,
   CreateAccountOutput,
@@ -25,18 +26,14 @@ export class UsersResolver {
   }
 
   @Query(() => User)
+  @Roles(['Any'])
   me(@AuthUser() authUser: User) {
     return authUser
   }
 
   @Query(() => [User])
+  @Roles(['Any'])
   users(): Promise<User[]> {
     return this.usersService.getAll()
   }
-
-  // @Mutation(() => Boolean)
-  // createUser(@Args() createUserDto: CreateUserDto): boolean {
-  //   console.log(createUserDto)
-  //   return true
-  // }
 }

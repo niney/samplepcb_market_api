@@ -10,6 +10,12 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
+export enum UserRole {
+  Client = 'Client',
+  Developer = 'Developer',
+  Administrator = 'Administrator',
+}
+
 @InputType('UserInputType', { isAbstract: true })
 @ObjectType()
 @Entity({
