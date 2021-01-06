@@ -47,6 +47,14 @@ import { JwtModule } from './jwt/jwt.module'
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
+      context: ({ req, connection }) => {
+        const TOKEN_KEY = 'authorization'
+        return {
+          token: req
+            ? req.headers[TOKEN_KEY].replace('Bearer ', '')
+            : connection.context[TOKEN_KEY].replace('Bearer ', ''),
+        }
+      },
     }),
     JwtModule.forRoot({
       secretKey: process.env.SECRET_KEY,

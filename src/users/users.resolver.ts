@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql'
 import {
   CreateAccountInput,
   CreateAccountOutput,
@@ -21,6 +21,12 @@ export class UsersResolver {
   @Mutation(() => LoginOutput)
   async login(@Args('input') loginInput: LoginInput): Promise<LoginOutput> {
     return await this.usersService.login(loginInput)
+  }
+
+  @Query(() => User)
+  me(@Context() context) {
+    console.log(context.token)
+    return this.usersService.findById(878)
   }
 
   @Query(() => [User])
