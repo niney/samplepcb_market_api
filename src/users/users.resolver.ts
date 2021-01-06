@@ -1,4 +1,5 @@
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { AuthUser } from 'src/auth/auth-user.decorator'
 import {
   CreateAccountInput,
   CreateAccountOutput,
@@ -24,9 +25,8 @@ export class UsersResolver {
   }
 
   @Query(() => User)
-  me(@Context() context) {
-    console.log(context.token)
-    return this.usersService.findById(878)
+  me(@AuthUser() authUser: User) {
+    return authUser
   }
 
   @Query(() => [User])

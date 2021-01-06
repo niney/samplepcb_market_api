@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module'
 import { User } from './users/entities/user.entity'
 import { CommonModule } from './common/common.module'
 import { JwtModule } from './jwt/jwt.module'
+import { AuthModule } from './auth/auth.module'
 
 @Module({
   imports: [
@@ -50,9 +51,7 @@ import { JwtModule } from './jwt/jwt.module'
       context: ({ req, connection }) => {
         const TOKEN_KEY = 'authorization'
         return {
-          token: req
-            ? req.headers[TOKEN_KEY].replace('Bearer ', '')
-            : connection.context[TOKEN_KEY].replace('Bearer ', ''),
+          token: req ? req.headers[TOKEN_KEY] : connection.context[TOKEN_KEY],
         }
       },
     }),
@@ -61,6 +60,7 @@ import { JwtModule } from './jwt/jwt.module'
     }),
     UsersModule,
     CommonModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

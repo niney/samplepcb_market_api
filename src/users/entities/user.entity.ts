@@ -50,6 +50,7 @@ export class User {
   @Field(() => String)
   @Column({
     name: 'mb_password',
+    select: false,
   })
   password: string
 
