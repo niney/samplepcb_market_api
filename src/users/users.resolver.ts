@@ -30,10 +30,4 @@ export class UsersResolver {
   me(@AuthUser() authUser: User) {
     return authUser
   }
-
-  @Query(() => [User])
-  @Roles(['Any'])
-  users(): Promise<User[]> {
-    return this.usersService.getAll()
-  }
 }

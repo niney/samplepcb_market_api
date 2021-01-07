@@ -19,10 +19,6 @@ export class UsersService {
     private readonly jwtService: JwtService,
   ) {}
 
-  getAll(): Promise<User[]> {
-    return this.users.find()
-  }
-
   async createAccount({
     userId,
     name,
