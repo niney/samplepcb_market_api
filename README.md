@@ -25,18 +25,19 @@ $ yarn start:dev
 $ yarn start:dev
 
 # production mode
-$ npm run start:prod
+$ yarn run start:prod
 ```
 
 ## Test
 
 ```bash
 # unit tests
-$ npm run test
+$ yarn run test
 
 # e2e tests
-$ npm run test:e2e
+$ cp .env.example .env.test # test용 .env 작성
+$ yarn run test:e2e
 
 # test coverage
-$ npm run test:cov
+$ yarn run test:cov
 ```
