@@ -19,9 +19,7 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
     )
 
-    if (!roles) {
-      return true
-    }
+    console.log('roles', roles)
 
     const ctx = GqlExecutionContext.create(context).getContext()
     const token = ctx.token
@@ -32,12 +30,16 @@ export class AuthGuard implements CanActivate {
         const { user } = await this.usersService.findById(decoded['id'])
         if (user) {
           ctx['user'] = user
-          if (roles.includes('Any')) {
+          if (roles && roles.includes('Any')) {
             return true
           }
           // return roles.includes(user.role)
         }
       }
+    }
+
+    if (!roles) {
+      return true
     }
 
     return false

@@ -10,6 +10,10 @@ import { User } from './users/entities/user.entity'
 import { CommonModule } from './common/common.module'
 import { JwtModule } from './jwt/jwt.module'
 import { AuthModule } from './auth/auth.module'
+import { FreelancersModule } from './freelancers/freelancers.module'
+import { Category } from './freelancers/entities/category.entity'
+import { Freelancer } from './freelancers/entities/freelancer.entity'
+import { Service } from './freelancers/entities/service.entity'
 
 @Module({
   imports: [
@@ -44,7 +48,7 @@ import { AuthModule } from './auth/auth.module'
       logging:
         process.env.NODE_ENV !== 'production' &&
         process.env.NODE_ENV !== 'test',
-      entities: [User],
+      entities: [User, Category, Freelancer, Service],
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
@@ -58,9 +62,10 @@ import { AuthModule } from './auth/auth.module'
     JwtModule.forRoot({
       secretKey: process.env.SECRET_KEY,
     }),
-    UsersModule,
     CommonModule,
     AuthModule,
+    UsersModule,
+    FreelancersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
