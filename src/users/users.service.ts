@@ -19,6 +19,15 @@ export class UsersService {
     private readonly jwtService: JwtService,
   ) {}
 
+  async isExistsUser(userId: string) {
+    try {
+      const exists = await this.users.findOne({ userId })
+      return exists
+    } catch {
+      return null
+    }
+  }
+
   async createAccount({
     userId,
     name,
@@ -35,7 +44,7 @@ export class UsersService {
       const now = moment().format('YYYY-MM-DD HH:mm:ss')
       const today = moment().format('YYYY-MM-DD')
 
-      await this.users.save(
+      const newUser = await this.users.save(
         this.users.create({
           userId,
           name,
@@ -53,6 +62,7 @@ export class UsersService {
 
       return {
         ok: true,
+        user: newUser,
       }
     } catch {
       return { ok: false, error: "Couldn't create account" }

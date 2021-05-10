@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { User } from 'src/users/entities/user.entity'
+import { UsersService } from 'src/users/users.service'
 import { In, Repository } from 'typeorm'
 import { CategoriesInput, CategoriesOutput } from './dtos/categories.dto'
 import { CategoryInput, CategroyOutput } from './dtos/category.dto'
@@ -27,6 +28,7 @@ export class FreelancersService {
     private readonly freelancers: Repository<Freelancer>,
     @InjectRepository(Service)
     private readonly services: Repository<Service>,
+    private readonly usersService: UsersService,
   ) {}
 
   async createCategory({
@@ -136,19 +138,65 @@ export class FreelancersService {
   }
 
   async createFreelancer(
-    userId: number,
-    { categoriesIds }: CreateFreelancerInput,
+    id: number,
+    {
+      categoriesIds,
+      sex,
+      career,
+      userId,
+      name,
+      password,
+      phone,
+    }: CreateFreelancerInput,
   ): Promise<CreateFreelancerOutput> {
     try {
-      // const services = await this.categories.find({
-      //   id: In(categoriesIds),
-      // })
-
       const categories = await this.categories.find({
         id: In(categoriesIds),
       })
 
-      const freelancer = await this.freelancers.save(this.freelancers.create())
+      if (!categories) {
+        return {
+          ok: false,
+          error: 'Could not find youer category',
+        }
+      }
+
+      let targetId = id ?? 0
+      // 비로그인 프리렌서 가입자
+      if (!id) {
+        const exists = await this.usersService.isExistsUser(userId)
+
+        if (exists) {
+          return {
+            ok: false,
+            error: '이미 등록된 사용자입니다.',
+          }
+        }
+
+        const result = await this.usersService.createAccount({
+          userId,
+          name,
+          password,
+          phone,
+        })
+
+        if (!result.ok) {
+          return {
+            ok: false,
+            error: result.error,
+          }
+        }
+
+        targetId = result.user?.id
+      }
+
+      const freelancer = await this.freelancers.save(
+        this.freelancers.create({
+          career,
+        }),
+      )
+
+      // const freelancer = await this.freelancers.findOne({ id: 4 })
 
       categories.map(async category => {
         await this.services.save(
@@ -159,17 +207,12 @@ export class FreelancersService {
         )
       })
 
-      // const freelancer = await this.freelancers.save(
-      //   this.freelancers.create({
-      //     services,
-      //   }),
-      // )
-
       const user = await this.users.findOne(
-        { id: userId },
+        { id: targetId },
         { relations: ['freelancer'] },
       )
 
+      user.sex = sex
       user.freelancer = freelancer
 
       await this.users.save(user)

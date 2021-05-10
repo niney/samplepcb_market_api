@@ -22,10 +22,14 @@ export class Freelancer extends CoreEntity {
   @IsString()
   coverImg: string
 
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  @IsString()
+  career: string
+
   // @Field(() => [Category])
   // @ManyToMany(() => Category)
   // services: Category[]
-
   @Field(() => [Service])
   @OneToMany(
     () => Service,
