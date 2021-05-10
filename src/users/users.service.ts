@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { json } from 'express'
 import * as moment from 'moment'
 import { JwtService } from 'src/jwt/jwt.service'
 import { Repository } from 'typeorm'
@@ -65,8 +64,8 @@ export class UsersService {
         ok: true,
         user: newUser,
       }
-    } catch (e) {
-      return { ok: false, error: JSON.stringify(e) }
+    } catch {
+      return { ok: false, error: "Couldn't create account" }
     }
   }
 
